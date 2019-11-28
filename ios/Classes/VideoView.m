@@ -56,7 +56,7 @@
       NSLog(@"frame--- %f", _videoView.bounds.origin.x);
       NSLog(@"frame--- %f", _videoView.bounds.origin.y);
       
-    _videoView.backgroundColor = [UIColor yellowColor];
+//    _videoView.backgroundColor = [UIColor yellowColor];
     NSDictionary *dic = args;
     
     NSString* channelName = [NSString stringWithFormat:@"plugins.hjc.com/tencentVideo_%lld", viewId];
