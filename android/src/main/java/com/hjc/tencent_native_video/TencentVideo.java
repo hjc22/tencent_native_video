@@ -19,19 +19,21 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.tencent.rtmp.ITXVodPlayListener;
-import com.tencent.rtmp.TXLiveConstants;
-import com.tencent.rtmp.TXPlayerAuthBuilder;
-import com.tencent.rtmp.TXVodPlayConfig;
-import com.tencent.rtmp.TXVodPlayer;
-import com.tencent.rtmp.ui.TXCloudVideoView;
+import com.shuyu.gsyvideoplayer.GSYVideoManager;
+import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
+import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
+import com.shuyu.gsyvideoplayer.player.PlayerFactory;
+import tv.danmaku.ijk.media.exo2.Exo2PlayerManager;
 
 
 public class TencentVideo implements PlatformView, MethodCallHandler {
-    private TXVodPlayer txPlayer;
-    private TXCloudVideoView mView;
+
+    EmptyControlVideo videoPlayer;
+
+
+    private View mView;
     private final MethodChannel methodChannel;
-    TXVodPlayConfig mPlayConfig;
 
 TencentVideo(
         final Context context,
@@ -39,25 +41,34 @@ TencentVideo(
         int id,
         Map<String, Object> params) {
 
-           View view1 = LayoutInflater.from(context)
+           mView = LayoutInflater.from(context)
             .inflate(R.layout.tencent_video, null);
-            mView = (TXCloudVideoView) view1.findViewById(R.id.superVodPlayerView);
-            txPlayer = new TXVodPlayer(context);
+            videoPlayer = (EmptyControlVideo) mView.findViewById(R.id.video_player);
 
-            setPlayConfig();
+            setPlayConfig(context);
 
-    txPlayer.setPlayerView(mView);
             methodChannel = new MethodChannel(messenger, "plugins.hjc.com/tencentVideo_" + id);
             methodChannel.setMethodCallHandler(this);
  }
 
-    private void setPlayConfig() {
-        mPlayConfig = new TXVodPlayConfig();
-        mPlayConfig.setCacheFolderPath(Environment.getExternalStorageDirectory().getPath() + "/txcache");
-        mPlayConfig.setMaxCacheItems(2);
-        txPlayer.setConfig(this.mPlayConfig);
-        txPlayer.enableHardwareDecode(true);
-        txPlayer.setLoop(true);
+    private void setPlayConfig(final Context context) {
+       //是否可以滑动调整
+        videoPlayer.setIsTouchWiget(false);
+
+        videoPlayer.setLooping(true);
+//        //设置返回键
+//        videoPlayer.getBackButton().setVisibility(View.GONE);
+//        //设置返回键
+//        videoPlayer.getStartButton().setVisibility(View.GONE);
+//        videoPlayer.getFullscreenButton().setVisibility(View.GONE);
+//        videoPlayer.setIsTouchWigetFull(false);
+
+
+        //增加title
+//        videoPlayer.getTitleTextView().setVisibility(View.GONE);
+        GSYVideoType.setShowType(GSYVideoType.SCREEN_MATCH_FULL);
+         GSYVideoType.setRenderType(GSYVideoType.GLSURFACE);
+        PlayerFactory.setPlayManager(Exo2PlayerManager.class);
     }
 
     @Override
@@ -65,15 +76,20 @@ TencentVideo(
       switch (methodCall.method) {
           case "loadUrl":
               String url = methodCall.arguments.toString();
-              txPlayer.startPlay(url);
+
+              videoPlayer.setUp(url, true, "测试视频");
+
+              videoPlayer.startPlayLogic();
+
+              result.success(true);
 
               break;
           case "dispose":
-                  txPlayer.stopPlay(true);
                   methodChannel.setMethodCallHandler(null);
-                  txPlayer = null;
-                  mView.onDestroy();
-                  mView = null;
+                 GSYVideoManager.releaseAllVideos();
+                 mView.setVisibility(View.GONE);
+                 mView = null;
+                 result.success(true);
                   break;
 
           default:
@@ -83,9 +99,8 @@ TencentVideo(
     @Override
     public void dispose() {
         methodChannel.setMethodCallHandler(null);
-        txPlayer.stopPlay(true);
-        txPlayer = null;
-        mView.onDestroy();
+//        mView.destroy();
+        GSYVideoManager.releaseAllVideos();
     }
 
     @Override

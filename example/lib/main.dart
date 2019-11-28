@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:tencent_native_video/tencentNativeVideoPlayer.dart';
 import 'package:tencent_native_video/tencent_native_video.dart';
+import 'package:native_video_view/native_video_view.dart';
 
 void main() => runApp(MyApp());
 
@@ -25,9 +26,7 @@ class _MyAppState extends State<MyApp> {
   Future<void> initPlatformState() async {
     String platformVersion;
     // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-
-    } on PlatformException {
+    try {} on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
 
@@ -40,6 +39,7 @@ class _MyAppState extends State<MyApp> {
       _platformVersion = platformVersion;
     });
   }
+
   TencentNativeVideoController _controller;
   @override
   Widget build(BuildContext context) {
@@ -49,21 +49,39 @@ class _MyAppState extends State<MyApp> {
           title: const Text('Plugin example app'),
         ),
         body: Center(
-          child: GestureDetector(
-            onTap: () {
-              print('21424');
-            },
-            onHorizontalDragEnd: (d) {
-              print('3333');
-              _controller.dispose();
+          child: Stack(
+//            fit: StackFit.expand,
+            children: <Widget>[
+              TencentNativeVideoPlayer(
+                  onCreated: (TencentNativeVideoController controller) {
+                    _controller = controller;
+                    controller.loadUrl(url: 'https://img.askcnd.com/v/50656.mp4');
+                  },
+                ),
 
-            },
-            child: TencentNativeVideoPlayer(
-              onCreated: (TencentNativeVideoController controller) {
-                _controller = controller;
-                controller.loadUrl(url: 'http://img.askcnd.com/v/50656.mp4');
-              },
-            ),
+//              NativeVideoView(
+//                onPrepared: (c, d) {},
+//                onCompletion: (d) {},
+//                onError: (d, c, b, f) {},
+//                onCreated: (VideoViewController controller) {
+//                  _controller = controller;
+//                  controller.setVideoSource(
+//                      'https://img.askcnd.com/v/50656.mp4',
+//                      sourceType: VideoSourceType.network);
+//                },
+//              ),
+              GestureDetector(
+                onTap: () {
+                  print('tap----');
+                },
+                child: Opacity(
+                  opacity: 0,
+                  child: Container(
+                    color: Colors.yellow,
+                  ),
+                ),
+              )
+            ],
           ),
         ),
       ),

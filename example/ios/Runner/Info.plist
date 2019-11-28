@@ -26,20 +26,51 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>需要您的同意，才能访问媒体资料库</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>需要您的同意，才能使用日历</string>
+	<key>NSCameraUsageDescription</key>
+	<string>拍摄头像，需要使用相机</string>
+	<key>NSContactsUsageDescription</key>
+	<string>需要您的同意，才能访问通讯库</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>需要访问您的位置，推荐最合适的视频</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>需要访问您的位置，推荐最合适的视频</string>
+	<key>NSMotionUsageDescription</key>
+	<string>需要您的同意，才能使用远动与健身</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>保存图片到相册，需要权限</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>更换头像，需要访问相册</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>需要您的同意，才能使用语言识别</string>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>UIStatusBarHidden</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+	<true/>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 </dict>
 </plist>

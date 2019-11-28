@@ -25,7 +25,7 @@ android {
     compileSdkVersion 28
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     lintOptions {
@@ -34,10 +34,8 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation(name: 'LiteAVSDK_Player_6.6.7458', ext: 'aar')
-    implementation(name: 'lib_tcsuperplayer', ext: 'aar')
-// 超级播放器弹幕集成的第三方库
-    implementation 'com.github.ctiao:DanmakuFlameMaster:0.5.3'
+    implementation 'com.shuyu:gsyVideoPlayer-java:7.1.1'
 
+//是否需要ExoPlayer模式
+    implementation 'com.shuyu:GSYVideoPlayer-exo2:7.1.1'
 }
