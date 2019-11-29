@@ -9,6 +9,11 @@
 
 @end
 
+
+@interface VideoView ()
+@property(readonly, nonatomic) NSMutableDictionary* players;
+@end
+
 @implementation VideoView {
 
   int64_t _viewId;
@@ -17,7 +22,7 @@
     NSURL * _videoUrl;
     
     JPVideoPlayerModel *_playModel;
-
+    
 }
 
 #pragma mark - life cycle
@@ -70,9 +75,6 @@
   return self;
 }
 
-- (void) getView {
-    
-}
 
 - (UIView*)view {
   return _videoView;
@@ -81,7 +83,7 @@
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([[call method] isEqualToString:@"loadUrl"]) {
     [self onLoadUrl:call result:result];
-  } else if ([[call method] isEqualToString:@"loadUrl"]) {
+  } else if ([[call method] isEqualToString:@"dispose"]) {
       [self dispose:call result:result];
   } else {
     result(FlutterMethodNotImplemented);
@@ -89,16 +91,23 @@
 }
 
 - (void)onLoadUrl:(FlutterMethodCall*)call result:(FlutterResult)result {
-  NSString* url = [call arguments];
+  NSDictionary* args = [call arguments];
 
-    NSURL* nsUrl = [NSURL URLWithString:url];
+    NSURL* nsUrl = [NSURL URLWithString:[args valueForKey: @"url"]];
     
     _videoUrl = nsUrl;
 }
 
 - (void)dispose:(FlutterMethodCall*)call result:(FlutterResult)result {
-    [_playModel stopPlay];
+    
+    
+    NSString* _currentViewId = [call arguments];
+    [_players[_currentViewId]  stopPlay];
+    
+    [_players removeObjectForKey:_currentViewId];
+    
     [_videoView removeFromSuperview];
+    [_channel setMethodCallHandler:nil];
     result(nil);
 }
 
@@ -110,6 +119,8 @@
                            options:kNilOptions
                             configuration:^(UIView *view, JPVideoPlayerModel *playerModel) {
       self->_playModel = playerModel;
+      
+      _players[@(_viewId)] = playerModel;
       
 //      _videoView.frame = _videoView.bounds;
 //      playerModel.playerLayer.frame = _videoView.bounds;
@@ -134,3 +145,4 @@
 
 
 @end
+
