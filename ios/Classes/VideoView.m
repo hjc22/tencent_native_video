@@ -60,6 +60,11 @@
       
       _txVodPlayer = [[TXVodPlayer alloc] init];
       [_txVodPlayer setupVideoWidget:_videoView insertIndex:0];
+      TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
+      
+      playConfig.playerType = PLAYER_AVPLAYER;
+      [_txVodPlayer setLoop: true];
+      [_txVodPlayer setConfig:playConfig];
       
 //    _videoView.backgroundColor = [UIColor yellowColor];
     NSDictionary *dic = args;
