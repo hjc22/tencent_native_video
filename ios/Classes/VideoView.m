@@ -81,6 +81,8 @@
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
   if ([[call method] isEqualToString:@"loadUrl"]) {
     [self onLoadUrl:call result:result];
+  } else if ([[call method] isEqualToString:@"loadUrl"]) {
+      [self dispose:call result:result];
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -88,12 +90,16 @@
 
 - (void)onLoadUrl:(FlutterMethodCall*)call result:(FlutterResult)result {
   NSString* url = [call arguments];
-    
-    NSLog(@"url--- %@", url);
-  
+
     NSURL* nsUrl = [NSURL URLWithString:url];
     
     _videoUrl = nsUrl;
+}
+
+- (void)dispose:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [_playModel stopPlay];
+    [_videoView removeFromSuperview];
+    result(nil);
 }
 
 - (bool)loadUrl{

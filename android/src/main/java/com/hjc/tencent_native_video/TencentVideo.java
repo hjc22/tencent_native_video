@@ -4,6 +4,7 @@ import android.content.Context;
 import android.app.Activity;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.LayoutInflater;
 import 	android.os.Environment;
@@ -18,6 +19,7 @@ import io.flutter.plugin.platform.PlatformView;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
@@ -35,6 +37,12 @@ public class TencentVideo implements PlatformView, MethodCallHandler {
     private View mView;
     private final MethodChannel methodChannel;
 
+
+    static Map<String, EmptyControlVideo> _videos = new HashMap<String, EmptyControlVideo>();
+
+
+    static Boolean isInit = true;
+
 TencentVideo(
         final Context context,
         BinaryMessenger messenger,
@@ -44,6 +52,15 @@ TencentVideo(
            mView = LayoutInflater.from(context)
             .inflate(R.layout.tencent_video, null);
             videoPlayer = (EmptyControlVideo) mView.findViewById(R.id.video_player);
+
+            videoPlayer.setPlayTag(String.valueOf(id));
+
+            _videos.put(String.valueOf(id), videoPlayer);
+
+            if(isInit) {
+                isInit = false;
+                videoInit();
+            }
 
             setPlayConfig(context);
 
@@ -56,6 +73,8 @@ TencentVideo(
         videoPlayer.setIsTouchWiget(false);
 
         videoPlayer.setLooping(true);
+
+
 //        //设置返回键
 //        videoPlayer.getBackButton().setVisibility(View.GONE);
 //        //设置返回键
@@ -66,31 +85,72 @@ TencentVideo(
 
         //增加title
 //        videoPlayer.getTitleTextView().setVisibility(View.GONE);
-        GSYVideoType.setShowType(GSYVideoType.SCREEN_MATCH_FULL);
-         GSYVideoType.setRenderType(GSYVideoType.GLSURFACE);
-        PlayerFactory.setPlayManager(Exo2PlayerManager.class);
+
     }
 
+    String _url;
     @Override
     public void onMethodCall(MethodCall methodCall, Result result) {
+
+
+        String viewId;
+        EmptyControlVideo _videoPlayer;
+
+        if(String.class.isInstance(methodCall.arguments)) {
+            viewId = methodCall.arguments.toString();
+
+            _videoPlayer = _videos.get(viewId);
+
+            if(_videoPlayer == null) {
+                result.error("NO_VIEWID", "No viewId", null);
+                return;
+            }
+        }
+        else {
+            _videoPlayer = null;
+            viewId = "";
+        }
       switch (methodCall.method) {
           case "loadUrl":
-              String url = methodCall.arguments.toString();
+              Map<String, String> args = methodCall.arguments();
 
-              videoPlayer.setUp(url, true, "测试视频");
+              String url = args.get("url");
 
-              videoPlayer.startPlayLogic();
+              viewId = args.get("viewId");
+
+              _videoPlayer = _videos.get(viewId);
+
+              _url = url;
+
+              Log.i("url222-start--", _url);
+
+              _videoPlayer.setUp(url, true, "测试视频");
+
+              _videoPlayer.startPlayLogic();
 
               result.success(true);
 
               break;
+          case "pause":
+              _videoPlayer.onVideoPause();
+              result.success(true);
+              break;
+          case "play":
+              _videoPlayer.onVideoResume();
+              result.success(true);
+              break;
           case "dispose":
-                  methodChannel.setMethodCallHandler(null);
-                 GSYVideoManager.releaseAllVideos();
-                 mView.setVisibility(View.GONE);
-                 mView = null;
-                 result.success(true);
-                  break;
+
+              Log.i("url222-end--", viewId);
+              Log.i("url222-length--", String.valueOf(_videos.size()));
+              _videoPlayer.setVideoAllCallBack(null);
+//              _videoPlayer.release();
+              _videoPlayer.releaseVideos();
+              _videos.remove(viewId);
+              mView.setVisibility(View.GONE);
+              mView = null;
+              result.success(true);
+              break;
 
           default:
               result.notImplemented();
@@ -98,9 +158,14 @@ TencentVideo(
   }
     @Override
     public void dispose() {
-        methodChannel.setMethodCallHandler(null);
-//        mView.destroy();
+
+    }
+
+    static void videoInit() {
         GSYVideoManager.releaseAllVideos();
+        GSYVideoType.setShowType(GSYVideoType.SCREEN_MATCH_FULL);
+        GSYVideoType.setRenderType(GSYVideoType.GLSURFACE);
+        PlayerFactory.setPlayManager(Exo2PlayerManager.class);
     }
 
     @Override
