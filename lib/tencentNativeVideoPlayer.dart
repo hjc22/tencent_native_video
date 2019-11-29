@@ -13,6 +13,8 @@ import './tencent_native_video.dart';
 
 typedef ViewCreatedCallback = void Function(TencentNativeVideoController controller);
 
+
+
 class TencentNativeVideoPlayer extends StatefulWidget {
 
   TencentNativeVideoPlayer({@required this.onCreated});
@@ -38,23 +40,25 @@ class _VideoPlayerState extends State<TencentNativeVideoPlayer> {
   @override
   Widget build(BuildContext context) {
     if (defaultTargetPlatform == TargetPlatform.android) {
-      return AndroidView(
-        viewType: _viewType,
-        onPlatformViewCreated: onPlatformViewCreated,
-        creationParams: <String,dynamic>{
-      
-        },
-        creationParamsCodec: const StandardMessageCodec(),
-      );
+      return IgnorePointer(
+          child: AndroidView(
+            viewType: _viewType,
+            onPlatformViewCreated: onPlatformViewCreated,
+            creationParams: <String,dynamic>{
+
+            },
+            creationParamsCodec: const StandardMessageCodec(),
+          ));
     } else {
-      return UiKitView(
-        viewType: _viewType,
-        onPlatformViewCreated: onPlatformViewCreated,
-        creationParams: <String,dynamic>{
-   
-        },
-        creationParamsCodec: const StandardMessageCodec(),
-      );
+      return IgnorePointer(
+          child:  UiKitView(
+            viewType: _viewType,
+            onPlatformViewCreated: onPlatformViewCreated,
+            creationParams: <String,dynamic>{
+
+            },
+            creationParamsCodec: const StandardMessageCodec(),
+          ));
     }
   }
 

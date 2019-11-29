@@ -1,13 +1,9 @@
 
 #import "VideoView.h"
-#import "VView.h"
-#import <JPVideoPlayer/JPVideoPlayerKit.h>
+#import "VVIew.h"
+#import <TXLiteAVSDK_Player/TXLiteAVSDK.h>
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-
-@interface VideoView ()<JPVideoPlayerDelegate>
-
-@end
 
 
 @interface VideoView ()
@@ -21,7 +17,8 @@
   VView * _videoView;
     NSURL * _videoUrl;
     
-    JPVideoPlayerModel *_playModel;
+    TXVodPlayer *_txVodPlayer;
+    
     
 }
 
@@ -40,9 +37,9 @@
       [_videoView addLayoutEvent: ^() {
           NSLog(@"88888");
           
-          if(_videoUrl != nil && _playModel == nil) {
-              [self loadUrl];
-          }
+//          if(_videoUrl != nil && _playModel == nil) {
+//              [self loadUrl];
+//          }
       }];
       
       
@@ -60,6 +57,9 @@
       NSLog(@"frame--- %f", _videoView.bounds.size.height);
       NSLog(@"frame--- %f", _videoView.bounds.origin.x);
       NSLog(@"frame--- %f", _videoView.bounds.origin.y);
+      
+      _txVodPlayer = [[TXVodPlayer alloc] init];
+      [_txVodPlayer setupVideoWidget:_videoView insertIndex:0];
       
 //    _videoView.backgroundColor = [UIColor yellowColor];
     NSDictionary *dic = args;
@@ -92,47 +92,58 @@
 
 - (void)onLoadUrl:(FlutterMethodCall*)call result:(FlutterResult)result {
   NSDictionary* args = [call arguments];
-
-    NSURL* nsUrl = [NSURL URLWithString:[args valueForKey: @"url"]];
     
-    _videoUrl = nsUrl;
+    NSString *url = [args valueForKey: @"url"];
+
+//    NSURL* nsUrl = [NSURL URLWithString:[args valueForKey: @"url"]];
+    
+//    _videoUrl = url;
+    
+     NSLog(@"-22-- %@", url);
+    
+    [_txVodPlayer startPlay: url ];
 }
 
 - (void)dispose:(FlutterMethodCall*)call result:(FlutterResult)result {
     
     
-    NSString* _currentViewId = [call arguments];
-    [_players[_currentViewId]  stopPlay];
-    
-    [_players removeObjectForKey:_currentViewId];
-    
-    [_videoView removeFromSuperview];
+//    NSString* _currentViewId = [call arguments];
+//    [_players[_currentViewId]  stopPlay];
+//
+//    [_players removeObjectForKey:_currentViewId];
+//
+//    [_videoView removeFromSuperview];
+    [_txVodPlayer stopPlay];
+    [_txVodPlayer removeVideoWidget];
     [_channel setMethodCallHandler:nil];
     result(nil);
 }
 
 - (bool)loadUrl{
+    
+    
+    
 
     
-    _videoView.jp_videoPlayerDelegate = self;
-  [_videoView jp_playVideoWithURL:_videoUrl
-                           options:kNilOptions
-                            configuration:^(UIView *view, JPVideoPlayerModel *playerModel) {
-      self->_playModel = playerModel;
-      
-      _players[@(_viewId)] = playerModel;
-      
-//      _videoView.frame = _videoView.bounds;
-//      playerModel.playerLayer.frame = _videoView.bounds;
-//      [_videoView setNeedsDisplay];
-//      [playerModel.playerLayer setNeedsDisplay];
-//      playerModel.playerLayer.contentsRect = _videoView.frame;
-//      NSLog(@"22---- %f", _videoView.bounds.size.width);
-//               NSLog(@"-22-- %f", _videoView.frame.size.height);
+//    _videoView.jp_videoPlayerDelegate = self;
+//  [_videoView jp_playVideoWithURL:_videoUrl
+//                           options:kNilOptions
+//                            configuration:^(UIView *view, JPVideoPlayerModel *playerModel) {
+//      self->_playModel = playerModel;
 //
-      playerModel.playerLayer.contentsGravity = AVLayerVideoGravityResize;
-      playerModel.playerLayer.videoGravity = AVLayerVideoGravityResize; // self.muteSwitch.on = ![self.videoContainer jp_muted];
-                                                                 }];
+//      _players[@(_viewId)] = playerModel;
+//
+////      _videoView.frame = _videoView.bounds;
+////      playerModel.playerLayer.frame = _videoView.bounds;
+////      [_videoView setNeedsDisplay];
+////      [playerModel.playerLayer setNeedsDisplay];
+////      playerModel.playerLayer.contentsRect = _videoView.frame;
+////      NSLog(@"22---- %f", _videoView.bounds.size.width);
+////               NSLog(@"-22-- %f", _videoView.frame.size.height);
+////
+//      playerModel.playerLayer.contentsGravity = AVLayerVideoGravityResize;
+//      playerModel.playerLayer.videoGravity = AVLayerVideoGravityResize; // self.muteSwitch.on = ![self.videoContainer jp_muted];
+//                                                                 }];
   return true;
 }
 

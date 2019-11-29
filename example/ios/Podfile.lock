@@ -1,13 +1,13 @@
 PODS:
   - Flutter (1.0.0)
-  - JPVideoPlayer (3.1.1)
   - native_video_view (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
   - tencent_native_video (0.0.1):
     - Flutter
-    - JPVideoPlayer
+    - TXLiteAVSDK_Player
+  - TXLiteAVSDK_Player (6.7.7754)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -17,7 +17,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - JPVideoPlayer
+    - TXLiteAVSDK_Player
 
 EXTERNAL SOURCES:
   Flutter:
@@ -31,10 +31,10 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  JPVideoPlayer: 234c2fc5c9dfd67b969a5dd8233815eb872472c6
   native_video_view: 02756aebe7ec9d0ab00d039b7aa3756548900bc3
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
-  tencent_native_video: 39e2a6ac506da32e196d50982d1bf5c91bc849e0
+  tencent_native_video: c346804da85b310e07fc3598cc04c5905ae5e42a
+  TXLiteAVSDK_Player: d38943e33667beec9e9ae06719f7f14b7c867953
 
 PODFILE CHECKSUM: 7062d975a837e03b72e60446a1a1d7e6469ca869
 
