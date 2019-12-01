@@ -12,6 +12,8 @@
 
 @implementation VideoPlayer{
     VView* _view;
+    
+    BOOL* loop;
 }
 
 - (instancetype)initWithCall:(NSDictionary*)argsMap viewId: (int64_t*) viewId view: (VView*) view messenger:(NSObject<FlutterBinaryMessenger>*)messenger{
@@ -44,6 +46,9 @@
     }
 
     BOOL isCache = argsMap[@"isCache"];
+    BOOL isLoop = argsMap[@"loop"];
+    loop = &isLoop;
+    
     if (isCache) {
         // 设置缓存路径
         playConfig.cacheFolderPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -53,10 +58,10 @@
     playConfig.progressInterval =  1;
     
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
-    BOOL loop = [argsMap[@"loop"] boolValue];
+//    BOOL loop = [argsMap[@"loop"] boolValue];
     
-    
-    
+//    NSLog(@" json----%@", argsMap[@"autoPlay"]);
+//
 //    NSString *a;
 //    NSError *error;
 //    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:argsMap options:NSJSONWritingPrettyPrinted error:&error];
@@ -65,20 +70,9 @@
 //    } else {
 //        a=  [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
 //    }
-//    
-    
-    
-
-    if(autoPlayArg == nil || autoPlayArg == NULL) {
-        autoPlayArg = true;
-    }
-    
-    if(loop == nil || loop == NULL) {
-        loop = false;
-    }
+//    NSLog(@" json----%@", a);
     
     float startPosition=0;
-
     id startTime = argsMap[@"startTime"];
     if(startTime!=nil&&startTime!=NULL&&![@"" isEqualToString:startTime]&&startTime!=[NSNull null]){
         startPosition =[argsMap[@"startTime"] floatValue];
@@ -94,29 +88,13 @@
     [_txPlayer setVideoProcessDelegate:self];
     [_txPlayer setStartTime:startPosition];
     
-    NSLog(@" json----%@", argsMap[@"loop"]);
-    
-    NSLog(@" json----%i", loop);
-    
-    [_txPlayer setLoop:(BOOL) loop];
-    
+//    [_txPlayer setLoop:(BOOL) loop];
 
-//    id  pathArg = argsMap[@"uri"];
-//    if(pathArg!=nil&&pathArg!=NULL&&![@"" isEqualToString:pathArg]&&pathArg!=[NSNull null]){
-//        NSLog(@"播放器启动方式1  play");
-//        [_txPlayer startPlay:pathArg];
-//    }
-    
     NSLog(@"播放器初始化结束");
 
-
-    return  self;
+    return self;
 
 }
-
-
-
-
 
 
 /**
@@ -190,9 +168,20 @@
 
         }else if(EvtID==PLAY_EVT_PLAY_END){
             if(self->_eventSink!=nil){
-                self->_eventSink(@{
-                    @"event":@"playend",
-                });
+                
+                if(self->loop) {
+                    self->_eventSink(@{
+                        @"event":@"singlePlayCompleted",
+                    });
+                    [self->_txPlayer seek:(float) 0];
+                    [self->_txPlayer resume];
+                }
+                else {
+                    self->_eventSink(@{
+                        @"event":@"playend",
+                    });
+                }
+                
             }
 
         }else if(EvtID==PLAY_ERR_NET_DISCONNECT){

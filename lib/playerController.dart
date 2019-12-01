@@ -9,6 +9,7 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
   MethodChannel _channel;
 
   String viewId;
+  
   bool _isDisposed = false;
 
   final PlayerConfig playerConfig;
@@ -17,10 +18,6 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
 
   TencentNativeVideoController.init(int id, {this.playerConfig}): viewId = id.toString(), _channel = MethodChannel('plugins.hjc.com/tencentVideo_$id'), super(VideoPlayerValue());
 
-//  viewId = id.toString();
-//  _channel =  new MethodChannel('plugins.hjc.com/tencentVideo_$id');
-//
-//  super(VideoPlayerValue());
   Future<void> loadUrl({String url}) async {
 
     _eventSubscription = _eventChannelFor(viewId)
@@ -40,10 +37,11 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
   Future<void> pause() async {
     value = value.copyWith(isPlaying: true);
 
+
     return _applyPlayPause();
   }
 
-  Future<void> play({String url}) async {
+  Future<void> play() async {
     value = value.copyWith(isPlaying: false);
     return _applyPlayPause();
   }
@@ -53,8 +51,10 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
       return;
     }
     if (value.isPlaying) {
+      await _eventSubscription.pause();
       return await _channel.invokeMethod('pause', viewId);
     } else {
+      await _eventSubscription.resume();
       return await _channel.invokeMethod('play', viewId);
     }
   }
@@ -62,15 +62,13 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
   dispose() async {
     if (!_isDisposed) {
       _isDisposed = true;
-      await _eventSubscription?.cancel();
-      print('333333255');
       _channel.invokeMethod('dispose', viewId);
+      await _eventSubscription?.cancel();
     }
   }
 
   void eventListener(dynamic event) {
 
-    print(value);
     if (_isDisposed) {
       return;
     }
@@ -91,13 +89,19 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
         );
         break;
       case 'loading':
+        print('isLoading start------');
         value = value.copyWith(isLoading: true);
         break;
       case 'loadingend':
         value = value.copyWith(isLoading: false);
         break;
       case 'playend':
+        if(playerConfig.onCompleted) playerConfig.onCompleted();
         value = value.copyWith(isPlaying: false, position: value.duration);
+        break;
+
+      case 'singlePlayCompleted':
+        if(playerConfig.onSinglePlayCompleted) playerConfig.onSinglePlayCompleted();
         break;
       case 'netStatus':
         value = value.copyWith(netSpeed: map['netSpeed']);

@@ -54,11 +54,21 @@ class _MyAppState extends State<MyApp> {
             children: <Widget>[
               TencentNativeVideoPlayer(
                 playerConfig: PlayerConfig(
-                  loop: true
+                  loop: true,
+                  autoPlay: false
                 ),
-                  onCreated: (TencentNativeVideoController controller) {
+                  onCreated: (TencentNativeVideoController controller) async {
                     _controller = controller;
+
+                    controller.addListener(() {
+                        print(controller.value);
+                    });
                     controller.loadUrl(url: 'https://img.askcnd.com/v/50656.mp4');
+
+                    await Future.delayed(const Duration(seconds: 2));
+
+                    controller.play();
+
                   },
                 ),
 
