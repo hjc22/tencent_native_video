@@ -9,7 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import './tencent_native_video.dart';
+import 'tencent_native_video.dart';
 
 typedef ViewCreatedCallback = void Function(TencentNativeVideoController controller);
 
@@ -17,7 +17,9 @@ typedef ViewCreatedCallback = void Function(TencentNativeVideoController control
 
 class TencentNativeVideoPlayer extends StatefulWidget {
 
-  TencentNativeVideoPlayer({@required this.onCreated});
+  final PlayerConfig playerConfig;
+
+  TencentNativeVideoPlayer({@required this.onCreated, this.playerConfig = const PlayerConfig()});
 
   final ViewCreatedCallback onCreated;
 
@@ -44,9 +46,7 @@ class _VideoPlayerState extends State<TencentNativeVideoPlayer> {
           child: AndroidView(
             viewType: _viewType,
             onPlatformViewCreated: onPlatformViewCreated,
-            creationParams: <String,dynamic>{
-
-            },
+            creationParams: widget.playerConfig.toJson(),
             creationParamsCodec: const StandardMessageCodec(),
           ));
     } else {
@@ -54,9 +54,7 @@ class _VideoPlayerState extends State<TencentNativeVideoPlayer> {
           child:  UiKitView(
             viewType: _viewType,
             onPlatformViewCreated: onPlatformViewCreated,
-            creationParams: <String,dynamic>{
-
-            },
+            creationParams: widget.playerConfig.toJson(),
             creationParamsCodec: const StandardMessageCodec(),
           ));
     }
@@ -64,7 +62,7 @@ class _VideoPlayerState extends State<TencentNativeVideoPlayer> {
 
   Future<void> onPlatformViewCreated(int id) async {
     controller =
-    await TencentNativeVideoController.init(id);
+    await TencentNativeVideoController.init(id, playerConfig: widget.playerConfig);
     if (widget.onCreated != null) widget.onCreated(controller);
   }
   @override

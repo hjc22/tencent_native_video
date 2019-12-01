@@ -53,6 +53,9 @@ class _MyAppState extends State<MyApp> {
 //            fit: StackFit.expand,
             children: <Widget>[
               TencentNativeVideoPlayer(
+                playerConfig: PlayerConfig(
+                  loop: true
+                ),
                   onCreated: (TencentNativeVideoController controller) {
                     _controller = controller;
                     controller.loadUrl(url: 'https://img.askcnd.com/v/50656.mp4');

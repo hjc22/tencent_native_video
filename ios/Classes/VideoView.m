@@ -4,7 +4,7 @@
 #import <TXLiteAVSDK_Player/TXLiteAVSDK.h>
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-
+#import "VideoPlayer.h"
 
 @interface VideoView ()
 @property(readonly, nonatomic) NSMutableDictionary* players;
@@ -15,11 +15,8 @@
   int64_t _viewId;
   FlutterMethodChannel* _channel;
   VView * _videoView;
-    NSURL * _videoUrl;
-    
-    TXVodPlayer *_txVodPlayer;
-    
-    
+  NSURL * _videoUrl;
+  VideoPlayer *_txVodPlayer;
 }
 
 #pragma mark - life cycle
@@ -31,43 +28,14 @@
   if (self = [super init]) {
     _viewId = viewId;
     _videoView = [[VView alloc] initWithFrame: frame];
-      _videoView.frame = _videoView.bounds;
       
-
-      [_videoView addLayoutEvent: ^() {
-          NSLog(@"88888");
-          
-//          if(_videoUrl != nil && _playModel == nil) {
-//              [self loadUrl];
-//          }
-      }];
+      NSDictionary *dic = args;
       
+      _txVodPlayer = [[VideoPlayer alloc] initWithCall:dic
+                                                viewId: (int64_t *) viewId
+                                                view: (VView*) self.view
+                                             messenger:messenger ];
       
-      
-//    _videoView.contentMode = UIViewContentModeScaleAspectFit;
-      
-//    _videoView.frame = CGRectMake(0, 0, 200, 200);
-      
-      NSLog(@"frame--- %f", frame.size.width);
-      NSLog(@"frame--- %f", frame.size.height);
-      NSLog(@"frame--- %f", frame.origin.x);
-      NSLog(@"frame--- %f", frame.origin.y);
-      
-      NSLog(@"frame--- %f", _videoView.bounds.size.width);
-      NSLog(@"frame--- %f", _videoView.bounds.size.height);
-      NSLog(@"frame--- %f", _videoView.bounds.origin.x);
-      NSLog(@"frame--- %f", _videoView.bounds.origin.y);
-      
-      _txVodPlayer = [[TXVodPlayer alloc] init];
-      [_txVodPlayer setupVideoWidget:_videoView insertIndex:0];
-      TXVodPlayConfig* playConfig = [[TXVodPlayConfig alloc]init];
-      
-      playConfig.playerType = PLAYER_AVPLAYER;
-      [_txVodPlayer setLoop: true];
-      [_txVodPlayer setConfig:playConfig];
-      
-//    _videoView.backgroundColor = [UIColor yellowColor];
-    NSDictionary *dic = args;
     
     NSString* channelName = [NSString stringWithFormat:@"plugins.hjc.com/tencentVideo_%lld", viewId];
     _channel = [FlutterMethodChannel methodChannelWithName:channelName binaryMessenger:messenger];
@@ -90,6 +58,13 @@
     [self onLoadUrl:call result:result];
   } else if ([[call method] isEqualToString:@"dispose"]) {
       [self dispose:call result:result];
+      result(nil);
+  } else if ([[call method] isEqualToString:@"pause"]) {
+      [_txVodPlayer pause];
+      result(nil);
+  } else if ([[call method] isEqualToString:@"play"]) {
+      [_txVodPlayer resume];
+      result(nil);
   } else {
     result(FlutterMethodNotImplemented);
   }
@@ -100,65 +75,33 @@
     
     NSString *url = [args valueForKey: @"url"];
 
-//    NSURL* nsUrl = [NSURL URLWithString:[args valueForKey: @"url"]];
+    @try {
+        [_txVodPlayer startPlay: url ];
+        
+        
+    } @catch (NSException *exception) {
+    } @finally {
+        
+    }
     
-//    _videoUrl = url;
-    
-     NSLog(@"-22-- %@", url);
-    
-    [_txVodPlayer startPlay: url ];
 }
 
 - (void)dispose:(FlutterMethodCall*)call result:(FlutterResult)result {
-    
-    
-//    NSString* _currentViewId = [call arguments];
-//    [_players[_currentViewId]  stopPlay];
-//
-//    [_players removeObjectForKey:_currentViewId];
-//
-//    [_videoView removeFromSuperview];
-    [_txVodPlayer stopPlay];
-    [_txVodPlayer removeVideoWidget];
+    _videoView = nil;
+    [_videoView removeFromSuperview];
+    [_videoView setHidden: true];
     [_channel setMethodCallHandler:nil];
+    [_txVodPlayer dispose];
+    
+    
     result(nil);
 }
 
 - (bool)loadUrl{
-    
-    
-    
-
-    
-//    _videoView.jp_videoPlayerDelegate = self;
-//  [_videoView jp_playVideoWithURL:_videoUrl
-//                           options:kNilOptions
-//                            configuration:^(UIView *view, JPVideoPlayerModel *playerModel) {
-//      self->_playModel = playerModel;
-//
-//      _players[@(_viewId)] = playerModel;
-//
-////      _videoView.frame = _videoView.bounds;
-////      playerModel.playerLayer.frame = _videoView.bounds;
-////      [_videoView setNeedsDisplay];
-////      [playerModel.playerLayer setNeedsDisplay];
-////      playerModel.playerLayer.contentsRect = _videoView.frame;
-////      NSLog(@"22---- %f", _videoView.bounds.size.width);
-////               NSLog(@"-22-- %f", _videoView.frame.size.height);
-////
-//      playerModel.playerLayer.contentsGravity = AVLayerVideoGravityResize;
-//      playerModel.playerLayer.videoGravity = AVLayerVideoGravityResize; // self.muteSwitch.on = ![self.videoContainer jp_muted];
-//                                                                 }];
   return true;
 }
 
-#pragma mark - JPVideoPlayerDelegate
-
-- (BOOL)shouldAutoReplayForURL:(nonnull NSURL *)videoURL {
-    return true;
-}
-//
-
 
 @end
+
 
