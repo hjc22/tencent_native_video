@@ -63,14 +63,14 @@ public class EmptyControlVideo extends StandardGSYVideoPlayer {
         return CustomManager.getCustomManager(getKey());
     }
 
+
     @Override
     protected void releaseVideos() {
+
         CustomManager.releaseAllVideos(getKey());
     }
 //
     public String getKey() {
-
-        Log.i("tag-----", TAG + mPlayPosition + mPlayTag);
         if (mPlayPosition == -22) {
             Debuger.printfError(getClass().getSimpleName() + " used getKey() " + "******* PlayPosition never set. ********");
         }

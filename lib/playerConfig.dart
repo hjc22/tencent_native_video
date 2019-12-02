@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+
+
 class PlayerConfig {
   final bool autoPlay;
   final bool loop;

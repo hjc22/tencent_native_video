@@ -45,32 +45,39 @@
         playConfig.headers = headers;
     }
 
-    BOOL isCache = argsMap[@"isCache"];
-    BOOL isLoop = argsMap[@"loop"];
-    loop = &isLoop;
+    BOOL isCache = [argsMap[@"isCache"] boolValue];
+    
+    BOOL isLoop = [argsMap[@"loop"] boolValue];
+    
+    loop = isLoop;
+    
+    
+    NSLog(@" json----%i", argsMap[@"isCache"]);
+
+    NSLog(@" json----%i", isCache);
     
     if (isCache) {
         // 设置缓存路径
         playConfig.cacheFolderPath =[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        playConfig.maxCacheItems = 10;
+        playConfig.maxCacheItems = 20;
     }
 
-    playConfig.progressInterval =  1;
+    playConfig.progressInterval =  0.5;
     
     BOOL autoPlayArg = [argsMap[@"autoPlay"] boolValue];
-//    BOOL loop = [argsMap[@"loop"] boolValue];
+
     
 //    NSLog(@" json----%@", argsMap[@"autoPlay"]);
 //
-//    NSString *a;
-//    NSError *error;
-//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:argsMap options:NSJSONWritingPrettyPrinted error:&error];
-//    if (!jsonData) {
-//        a =  @"{}";
-//    } else {
-//        a=  [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    }
-//    NSLog(@" json----%@", a);
+    NSString *a;
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:argsMap options:NSJSONWritingPrettyPrinted error:&error];
+    if (!jsonData) {
+        a =  @"{}";
+    } else {
+        a=  [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    }
+    NSLog(@" json----%@", a);
     
     float startPosition=0;
     id startTime = argsMap[@"startTime"];
@@ -95,7 +102,6 @@
     return self;
 
 }
-
 
 /**
  * 点播事件通知
@@ -128,25 +134,16 @@
 
         }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
             if ([player isPlaying]) {
-                int64_t progress = [player currentPlaybackTime];
-                int64_t duration = [player duration];
-                int64_t playableDuration  = [player playableDuration];
-
-
-                NSString *progressStr = [NSString stringWithFormat: @"%ld", (long)progress];
-                NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
-                NSString *playableDurationStr = [NSString stringWithFormat: @"%ld", (long)playableDuration];
-                NSInteger  progressInt = [progressStr intValue]*1000;
-                NSInteger  durationint = [durationStr intValue]*1000;
-                NSInteger  playableDurationInt = [playableDurationStr intValue]*1000;
-                //                NSLog(@"单精度浮点数： %d",progressInt);
-                //                NSLog(@"单精度浮点数： %d",durationint);
+                int64_t progress = [player currentPlaybackTime] * 1000;
+                int64_t duration = [player duration] * 1000;
+                int64_t playableDuration  = [player playableDuration] * 1000;
+                
                 if(self->_eventSink!=nil){
                     self->_eventSink(@{
                         @"event":@"progress",
-                        @"progress":@(progressInt),
-                        @"duration":@(durationint),
-                        @"playable":@(playableDurationInt)
+                        @"progress":@(progress),
+                        @"duration":@(duration),
+                        @"playable":@(playableDuration)
                     });
                 }
 
@@ -262,7 +259,7 @@
 
 -(void)setLoop:(BOOL)loop{
     [_txPlayer setLoop:loop];
-    _loop = loop;
+    loop = loop;
 }
 
 - (void)resume{

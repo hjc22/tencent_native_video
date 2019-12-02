@@ -20,13 +20,13 @@ public class TencentNativeVideoPlugin implements FlutterPlugin {
     BinaryMessenger messenger = flutterPluginBinding.getFlutterEngine().getDartExecutor();
 
     Log.i("native video----", "init44");
-    flutterPluginBinding
-            .getFlutterEngine()
-            .getPlatformViewsController()
-            .getRegistry()
-            .registerViewFactory(
-                    "plugins.hjc.com/tencentVideo",
-                    new TencentVideoFactory(messenger,/*containerView=*/ null));
+//    flutterPluginBinding
+//            .getFlutterEngine()
+//            .getPlatformViewsController()
+//            .getRegistry()
+//            .registerViewFactory(
+//                    "plugins.hjc.com/tencentVideo",
+//                    new TencentVideoFactory(messenger,/*containerView=*/ null));
   }
 
   // This static function is optional and equivalent to onAttachedToEngine. It supports the old
@@ -44,9 +44,7 @@ public class TencentNativeVideoPlugin implements FlutterPlugin {
             .platformViewRegistry()
             .registerViewFactory(
                     "plugins.hjc.com/tencentVideo",
-                    new TencentVideoFactory(registrar.messenger(
-
-                    ), null));
+                    new TencentVideoFactory(registrar.messenger(),registrar, null));
   }
 
 

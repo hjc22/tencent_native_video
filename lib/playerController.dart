@@ -26,6 +26,8 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
 
     value = value.copyWith(isPlaying: playerConfig.autoPlay);
 
+    print('value------${value}');
+
     return await _channel.invokeMethod('loadUrl', {
       'url': url,
       'viewId': viewId
@@ -35,14 +37,14 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
   }
 
   Future<void> pause() async {
-    value = value.copyWith(isPlaying: true);
+    value = value.copyWith(isPlaying: false);
 
 
     return _applyPlayPause();
   }
 
   Future<void> play() async {
-    value = value.copyWith(isPlaying: false);
+    value = value.copyWith(isPlaying: true);
     return _applyPlayPause();
   }
 
@@ -50,7 +52,7 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
     if (!value.initialized || _isDisposed) {
       return;
     }
-    if (value.isPlaying) {
+    if (!value.isPlaying) {
       await _eventSubscription.pause();
       return await _channel.invokeMethod('pause', viewId);
     } else {
@@ -96,12 +98,12 @@ class TencentNativeVideoController extends ValueNotifier<VideoPlayerValue> {
         value = value.copyWith(isLoading: false);
         break;
       case 'playend':
-        if(playerConfig.onCompleted) playerConfig.onCompleted();
+        if(playerConfig.onCompleted != null) playerConfig.onCompleted();
         value = value.copyWith(isPlaying: false, position: value.duration);
         break;
 
       case 'singlePlayCompleted':
-        if(playerConfig.onSinglePlayCompleted) playerConfig.onSinglePlayCompleted();
+        if(playerConfig.onSinglePlayCompleted != null) playerConfig.onSinglePlayCompleted();
         break;
       case 'netStatus':
         value = value.copyWith(netSpeed: map['netSpeed']);

@@ -14,11 +14,13 @@ import java.util.Map;
 
 public final class TencentVideoFactory extends PlatformViewFactory {
     private final BinaryMessenger messenger;
+    private final Registrar registrar;
     private final View containerView;
 
-    TencentVideoFactory(BinaryMessenger messenger, View containerView) {
+    TencentVideoFactory(BinaryMessenger messenger, Registrar registrar, View containerView) {
         super(StandardMessageCodec.INSTANCE);
         this.messenger = messenger;
+        this.registrar = registrar;
         this.containerView = containerView;
     }
 
@@ -26,6 +28,6 @@ public final class TencentVideoFactory extends PlatformViewFactory {
     @Override
     public PlatformView create(Context context, int id, Object args) {
         Map<String, Object> params = (Map<String, Object>) args;
-        return new TencentVideo(context, messenger, id, params);
+        return new TencentVideo(context, messenger, id, params, registrar);
     }
 }
