@@ -8,14 +8,14 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import <GLKit/GLKit.h>
-#import "TXLiteAVSDK.h"
+#import <AliyunPlayer/AliyunPlayer.h>
 #import <Flutter/Flutter.h>
 #import "VVIew.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface VideoPlayer : NSObject<FlutterStreamHandler,TXVideoCustomProcessDelegate,TXVodPlayListener>
-@property(readonly,nonatomic) TXVodPlayer* txPlayer;
+@interface VideoPlayer : NSObject<FlutterStreamHandler,AVPDelegate>
+@property(readonly,nonatomic) AliPlayer* txPlayer;
 @property(nonatomic) FlutterEventChannel* eventChannel;
 @property(nonatomic) VView* _view;
 
@@ -67,13 +67,13 @@ NS_ASSUME_NONNULL_BEGIN
  * @param rotation 方向
  * @see TX_Enum_Type_HomeOrientation
  */
-- (void)setRenderRotation:(TX_Enum_Type_HomeOrientation)rotation;
+- (void)setRenderRotation:(AVPRotateMode)rotation;
 /**
  * 设置画面的裁剪模式
  * @param renderMode 裁剪
  * @see TX_Enum_Type_RenderMode
  */
-- (void)setRenderMode:(TX_Enum_Type_RenderMode)renderMode;
+- (void)setRenderMode:(AVPScalingMode)renderMode;
 /**
  * 设置静音
  */
@@ -83,7 +83,7 @@ NS_ASSUME_NONNULL_BEGIN
  * 截屏
  * @param snapshotCompletionBlock 通过回调返回当前图像
  */
-- (void)snapshot:(void (^)(UIImage *))snapshotCompletionBlock;
+- (void)onCaptureScreen:(AliPlayer *)player image:(UIImage *)image;
 /**
  * 设置播放速率
  * @param rate 正常速度为1.0；小于为慢速；大于为快速。最大建议不超过2.0
@@ -95,8 +95,6 @@ NS_ASSUME_NONNULL_BEGIN
  * 设置画面镜像
  */
 - (void)setMirror:(BOOL)isMirror;
-
--(void) removeVideoWidget;
 
 -(void) startPlay:(NSString *) url;
 

@@ -1,7 +1,6 @@
 
 #import "VideoView.h"
 #import "VVIew.h"
-#import <TXLiteAVSDK_Player/TXLiteAVSDK.h>
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
 #import "VideoPlayer.h"
@@ -25,7 +24,7 @@
                viewIdentifier:(int64_t)viewId
                     arguments:(id _Nullable)args
               binaryMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
-  if (self = [super init]) {
+//  if (self = [super init]) {
     _viewId = viewId;
     _videoView = [[VView alloc] initWithFrame: frame];
       
@@ -44,7 +43,7 @@
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
           [weakSelf onMethodCall:call result:result];
         }];
-  }
+//  }
   return self;
 }
 
@@ -77,8 +76,6 @@
 
     @try {
         [_txVodPlayer startPlay: url ];
-        
-        
     } @catch (NSException *exception) {
     } @finally {
         
