@@ -119,12 +119,12 @@
             if ([player isPlaying]) {
 
                 int64_t duration = [player duration];
-                NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
-                NSInteger  durationInt = [durationStr intValue];
+                // NSString *durationStr = [NSString stringWithFormat: @"%ld", (long)duration];
+                // NSInteger  durationInt = [durationStr intValue];
                 if(self->_eventSink!=nil){
                     self->_eventSink(@{
                         @"event":@"initialized",
-                        @"duration":@(durationInt),
+                        @"duration":@(duration),
                         @"width":@([player width]),
                         @"height":@([player height])
                     });
@@ -133,7 +133,7 @@
             }
 
         }else if(EvtID==PLAY_EVT_PLAY_PROGRESS){
-            if ([player isPlaying]) {
+            // if ([player isPlaying]) {
                 int64_t progress = [player currentPlaybackTime] * 1000;
                 int64_t duration = [player duration] * 1000;
                 int64_t playableDuration  = [player playableDuration] * 1000;
@@ -147,7 +147,7 @@
                     });
                 }
 
-            }
+            // }
 
         }else if(EvtID==PLAY_EVT_PLAY_LOADING){
             if(self->_eventSink!=nil){
