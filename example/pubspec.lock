@@ -212,6 +212,15 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.8"
+  video_player:
+    dependency: transitive
+    description:
+      path: "packages/video_player"
+      ref: newCache
+      resolved-ref: "1ea4e573d7852a8f29d014bbba06d393a67ca5fc"
+      url: "https://github.com/hjc22/plugins.git"
+    source: git
+    version: "0.11.0"
   xml:
     dependency: transitive
     description:

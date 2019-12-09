@@ -6,6 +6,8 @@ import 'package:tencent_native_video/tencentNativeVideoPlayer.dart';
 import 'package:tencent_native_video/tencent_native_video.dart';
 import 'package:native_video_view/native_video_view.dart';
 
+import 'package:video_player/video_player.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -13,14 +15,33 @@ class MyApp extends StatefulWidget {
   _MyAppState createState() => _MyAppState();
 }
 
+
 class _MyAppState extends State<MyApp> {
+
+
+  VideoPlayerController _controller2;
   String _platformVersion = 'Unknown';
 
   @override
   void initState() {
     super.initState();
     initPlatformState();
+
+   init();
+
   }
+
+  init() async {
+    _controller2 = VideoPlayerController.network('https://img.askcnd.com/v/36892.mp4');
+
+    _controller2.setLooping(true);
+    await _controller2.initialize();
+
+    setState(() {
+
+    });
+    _controller2.play();
+}
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
@@ -52,25 +73,28 @@ class _MyAppState extends State<MyApp> {
           child: Stack(
 //            fit: StackFit.expand,
             children: <Widget>[
-              TencentNativeVideoPlayer(
-                playerConfig: PlayerConfig(
-                  loop: true,
-                  autoPlay: false
-                ),
-                  onCreated: (TencentNativeVideoController controller) async {
-                    _controller = controller;
-
-                    controller.addListener(() {
-                        print(controller.value);
-                    });
-                    controller.loadUrl(url: 'https://img.askcnd.com/v/50656.mp4');
-
-                    await Future.delayed(const Duration(seconds: 2));
-
-                    controller.play();
-
-                  },
-                ),
+              VideoPlayer(
+                _controller2
+              ),
+//              TencentNativeVideoPlayer(
+//                playerConfig: PlayerConfig(
+//                  loop: true,
+//                  autoPlay: false
+//                ),
+//                  onCreated: (TencentNativeVideoController controller) async {
+//                    _controller = controller;
+//
+//                    controller.addListener(() {
+//                        print(controller.value);
+//                    });
+//                    controller.loadUrl(url: 'https://img.askcnd.com/v/36892.mp4');
+//
+//                    await Future.delayed(const Duration(seconds: 2));
+//
+//                    controller.play();
+//
+//                  },
+//                ),
 
 //              NativeVideoView(
 //                onPrepared: (c, d) {},

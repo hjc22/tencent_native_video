@@ -461,13 +461,13 @@
 }
 
 - (void)setRenderMode:(AVPScalingMode)renderMode{
-    [_txPlayer setScalingMode:(AVPScalingMode):(AVPScalingMode):renderMode];
+    [_txPlayer setScalingMode:(AVPScalingMode) renderMode];
 }
 
 - (void)setRenderRotation:(AVPRotateMode)rotation{
 
     [_txPlayer setRotateMode:rotation];
-}s
+}
 
 - (void)setMute:(BOOL)bEnable{
     [_txPlayer setMuted: bEnable];
@@ -483,7 +483,7 @@
 }
 //
 - (void)setMirror:(AVPMirrorMode)isMirror{
-    [_txPlayer setMirrorMode:(AVPMirrorMode):isMirror];
+    [_txPlayer setMirrorMode:(AVPMirrorMode) isMirror];
 }
 //截图回调
 - (void)onCaptureScreen:(AliPlayer *)player image:(UIImage *)image {

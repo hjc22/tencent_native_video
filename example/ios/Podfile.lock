@@ -1,23 +1,31 @@
 PODS:
+  - AliPlayerSDK_iOS (4.7.2):
+    - AliPlayerSDK_iOS/AliPlayerSDK (= 4.7.2)
+  - AliPlayerSDK_iOS/AliPlayerSDK (4.7.2)
   - Flutter (1.0.0)
   - native_video_view (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
   - tencent_native_video (0.0.1):
+    - AliPlayerSDK_iOS
     - Flutter
-    - TXLiteAVSDK_Player
-  - TXLiteAVSDK_Player (6.7.7754)
+  - video_player (0.0.1):
+    - Flutter
+    - VIMediaCache
+  - VIMediaCache (0.4)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - native_video_view (from `.symlinks/plugins/native_video_view/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - tencent_native_video (from `.symlinks/plugins/tencent_native_video/ios`)
+  - video_player (from `.symlinks/plugins/video_player/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
-    - TXLiteAVSDK_Player
+    - AliPlayerSDK_iOS
+    - VIMediaCache
 
 EXTERNAL SOURCES:
   Flutter:
@@ -28,13 +36,17 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider/ios"
   tencent_native_video:
     :path: ".symlinks/plugins/tencent_native_video/ios"
+  video_player:
+    :path: ".symlinks/plugins/video_player/ios"
 
 SPEC CHECKSUMS:
+  AliPlayerSDK_iOS: 580fa79a9adbf21d4c591601b2c24f830e670551
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   native_video_view: 02756aebe7ec9d0ab00d039b7aa3756548900bc3
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
-  tencent_native_video: c346804da85b310e07fc3598cc04c5905ae5e42a
-  TXLiteAVSDK_Player: d38943e33667beec9e9ae06719f7f14b7c867953
+  tencent_native_video: 4dae3b29aebb6206667113e16e22c742e62866ab
+  video_player: c0fe23822450df713f9ce34bddbc97ed8b55e4f5
+  VIMediaCache: aa650f82cb114c68a343beb4e67416cf5eb2f3a2
 
 PODFILE CHECKSUM: 7062d975a837e03b72e60446a1a1d7e6469ca869
 
